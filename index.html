@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azabu Juggling Club | 麻布ジャグリングクラブ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .btn-primary {
+            background-color: #50C878;
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background-color: #45b36b;
+            transform: scale(1.05);
+        }
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .header-scrolled {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        #mobile-menu {
+            display: none;
+        }
+        #mobile-menu.open {
+            display: flex;
+        }
+        .canvas-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: 0;
+        }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="min-h-screen selection:bg-emerald-500/30 text-slate-800">
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-[#50C878] rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    A
+                </div>
+                <span class="font-bold text-xl tracking-tight text-slate-800">
+                    Azabu Juggling Club
+                </span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#about" class="text-slate-600 hover:text-[#50C878] font-medium transition-colors">About</a>
+                <a href="#classes" class="text-slate-600 hover:text-[#50C878] font-medium transition-colors">Classes</a>
+                <a href="#event" class="text-slate-600 hover:text-[#50C878] font-medium transition-colors">Event</a>
+                <button class="bg-[#50C878] text-white font-bold py-2 px-6 rounded-full text-sm hover:bg-[#45b36b] transition-all">
+                    無料体験に申し込む
+                </button>
+            </nav>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menu-toggle" class="md:hidden p-2 text-slate-600">
+                <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg id="close-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden bg-white border-b border-slate-100 p-6 flex-col gap-4 shadow-xl">
+            <a href="#about" class="text-lg font-medium text-slate-700 mobile-link">About</a>
+            <a href="#classes" class="text-lg font-medium text-slate-700 mobile-link">Classes</a>
+            <a href="#event" class="text-lg font-medium text-slate-700 mobile-link">Event</a>
+            <button class="bg-[#50C878] text-white font-bold py-4 rounded-full w-full">
+                無料体験に申し込む
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <canvas id="juggling-canvas" class="canvas-container"></canvas>
+        <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+            <div class="reveal active">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 text-[#50C878] font-bold text-sm mb-6 border border-emerald-500/20">
+                    港区・麻布のジャグリング教室
+                </span>
+                <h1 class="text-5xl md:text-7xl font-bold text-slate-900 leading-tight mb-8">
+                    麻布から、親子で楽しむ<br />
+                    <span class="text-[#50C878]">本物の体験</span>を。
+                </h1>
+                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed">
+                    日本チャンピオンが教える、集中力と笑顔が育つジャグリングクラブ。<br class="hidden md:block" />
+                    新しい自分に出会える、魔法のような時間を。
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button class="btn-primary text-lg px-10">
+                        今すぐ無料体験に申し込む
+                    </button>
+                    <button class="px-8 py-4 rounded-full font-bold text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2">
+                        クラス詳細を見る 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-400 animate-bounce">
+            <div class="w-6 h-10 border-2 border-slate-200 rounded-full flex justify-center p-1">
+                <div class="w-1 h-2 bg-slate-200 rounded-full"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="relative reveal">
+                    <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
+                        <img 
+                            src="https://picsum.photos/seed/juggling/800/1000" 
+                            alt="Representative" 
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+                    <div class="absolute -bottom-8 -right-8 bg-white p-8 rounded-2xl shadow-xl max-w-xs border border-slate-100">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500 font-medium">Representative</p>
+                                <p class="font-bold text-lg">茂木 和徳</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            20年間広告業界で働きながら、自身の子供の誕生をきっかけに、親子で夢中になれる場を作りたいという想いで設立しました。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-slate-900">
+                        設立の想いと実績
+                    </h2>
+                    <p class="text-lg text-slate-600 mb-10 leading-relaxed">
+                        ジャグリングは単なる技術ではありません。集中力を研ぎ澄ませ、失敗を恐れずに挑戦し、成功した時の喜びを分かち合う。そんな「生きる力」を育む素晴らしいツールです。
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-6 p-6 rounded-2xl bg-white shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                            <div class="text-[#50C878] font-bold text-lg pt-1">2002</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 mb-1">Japan Juggling Festival チーム部門 優勝</h4>
+                                <p class="text-sm text-slate-500">日本一の称号を獲得</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 p-6 rounded-2xl bg-white shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                            <div class="text-[#50C878] font-bold text-lg pt-1">2003</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 mb-1">大道芸ワールドカップin静岡 出場</h4>
+                                <p class="text-sm text-slate-500">世界レベルのパフォーマンスを披露</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 p-6 rounded-2xl bg-white shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                            <div class="text-[#50C878] font-bold text-lg pt-1">Licensed</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 mb-1">東京都公認「ヘブンアーティスト」</h4>
+                                <p class="text-sm text-slate-500">厳しい審査を通過した公認ライセンス</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Classes Section -->
+    <section id="classes" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">選べる3つのクラス</h2>
+                <p class="text-slate-500">目的やライフスタイルに合わせて最適なプランをお選びいただけます。</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Kids Class -->
+                <div class="reveal p-8 rounded-3xl border border-slate-100 shadow-xl bg-white flex flex-col hover:scale-[1.02] transition-transform">
+                    <div class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6">
+                        <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">キッズクラス</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-3xl font-bold">¥8,000</span>
+                        <span class="text-slate-400 text-sm">/ 月額</span>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-8 flex-grow">
+                        集中力を高め、脳を活性化します。楽しみながらリズム感とバランス感覚を養います。
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 週1回レッスン
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 道具の貸出無料
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 発表会への参加
+                        </li>
+                    </ul>
+                    <button class="w-full py-4 rounded-2xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+                        このクラスを体験する
+                    </button>
+                </div>
+
+                <!-- Executive Class -->
+                <div class="reveal relative p-8 rounded-3xl border border-[#50C878] ring-4 ring-emerald-500/5 shadow-2xl bg-white flex flex-col hover:scale-[1.02] transition-transform">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#50C878] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                        Most Popular
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6">
+                        <svg class="text-orange-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">エグゼクティブ</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-3xl font-bold">¥12,000</span>
+                        <span class="text-slate-400 text-sm">/ 月額</span>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-8 flex-grow">
+                        ビジネスの合間のマインドフルネスに。デジタルデトックスと集中力回復に最適です。
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 夜間・週末対応
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 少人数制
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> ドリンクサービス付
+                        </li>
+                    </ul>
+                    <button class="w-full py-4 rounded-2xl font-bold bg-[#50C878] text-white shadow-lg shadow-emerald-500/20 transition-all">
+                        このクラスを体験する
+                    </button>
+                </div>
+
+                <!-- Private Class -->
+                <div class="reveal p-8 rounded-3xl border border-slate-100 shadow-xl bg-white flex flex-col hover:scale-[1.02] transition-transform">
+                    <div class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6">
+                        <svg class="text-yellow-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">プライベート</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-3xl font-bold">¥10,000〜</span>
+                        <span class="text-slate-400 text-sm">/ 月額</span>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-8 flex-grow">
+                        最速で上達したい方へ。日本チャンピオンがマンツーマンで徹底的に指導します。
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 完全オーダーメイド
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 場所指定可能
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-600">
+                            <svg class="text-[#50C878]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 動画添削サービス
+                        </li>
+                    </ul>
+                    <button class="w-full py-4 rounded-2xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+                        このクラスを体験する
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section id="event" class="py-24 bg-emerald-500/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="reveal bg-white rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col lg:flex-row border border-emerald-500/10 hover:scale-[1.01] transition-transform duration-500">
+                <div class="lg:w-1/2 h-64 lg:h-auto relative">
+                    <img 
+                        src="https://picsum.photos/seed/festival/1200/800" 
+                        alt="Festival" 
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-transparent"></div>
+                </div>
+                <div class="lg:w-1/2 p-10 md:p-16 flex flex-col justify-center">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="px-4 py-1 rounded-full bg-orange-500 text-white text-xs font-bold">NEWS</span>
+                        <span class="text-slate-400 text-sm font-medium flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 2026.07.05
+                        </span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-slate-900">
+                        天の川蛍祭り 出演決定！
+                    </h2>
+                    <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                        麻布の夜を彩る光のパフォーマンス。当日はAJC特製ロシアンボールの販売も行います！幻想的な光とジャグリングの融合をぜひ間近でご覧ください。
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="bg-slate-900 text-white font-bold py-4 px-8 rounded-full flex items-center gap-2 hover:bg-slate-800 transition-all">
+                            イベント詳細 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Facebook / Reels Section -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6 reveal">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3">
+                        <svg class="text-[#1877F2]" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        最新のパフォーマンスをチェック
+                    </h2>
+                    <p class="text-slate-500">
+                        Facebookでは日々の練習風景や、最新のリール動画を公開しています。
+                        日本チャンピオンの技を動画でご覧ください。
+                    </p>
+                </div>
+                <a 
+                    href="https://www.facebook.com/profile.php?id=100077071728254" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-2 text-[#1877F2] font-bold hover:underline"
+                >
+                    Facebookプロフィールを見る <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Reel 1 -->
+                <a href="https://www.facebook.com/reel/1852623928848502" target="_blank" class="reveal aspect-[9/16] sm:aspect-auto sm:h-64 rounded-3xl overflow-hidden relative group shadow-sm hover:shadow-md border-2 border-[#50C878]/20 hover:border-[#50C878] bg-white transition-all duration-300 flex flex-col justify-center items-center p-6 text-center">
+                    <div class="w-16 h-16 bg-[#50C878]/10 text-[#50C878] rounded-full flex items-center justify-center mb-4 group-hover:bg-[#50C878] group-hover:text-white transition-colors duration-300">
+                        <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-current border-b-[8px] border-b-transparent ml-1"></div>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider mb-2 text-slate-400 group-hover:text-[#50C878] transition-colors">Performance Video</span>
+                    <h4 class="font-bold text-lg text-slate-800 mb-2">パフォーマンス動画 1</h4>
+                    <p class="text-sm text-slate-500 flex items-center justify-center gap-2 mt-4">
+                        <svg class="text-[#1877F2]" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <span>Facebookで再生</span>
+                    </p>
+                </a>
+                <!-- Reel 2 -->
+                <a href="https://www.facebook.com/reel/698447969397826" target="_blank" class="reveal aspect-[9/16] sm:aspect-auto sm:h-64 rounded-3xl overflow-hidden relative group shadow-sm hover:shadow-md border-2 border-[#50C878]/20 hover:border-[#50C878] bg-white transition-all duration-300 flex flex-col justify-center items-center p-6 text-center">
+                    <div class="w-16 h-16 bg-[#50C878]/10 text-[#50C878] rounded-full flex items-center justify-center mb-4 group-hover:bg-[#50C878] group-hover:text-white transition-colors duration-300">
+                        <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-current border-b-[8px] border-b-transparent ml-1"></div>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider mb-2 text-slate-400 group-hover:text-[#50C878] transition-colors">Performance Video</span>
+                    <h4 class="font-bold text-lg text-slate-800 mb-2">パフォーマンス動画 2</h4>
+                    <p class="text-sm text-slate-500 flex items-center justify-center gap-2 mt-4">
+                        <svg class="text-[#1877F2]" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <span>Facebookで再生</span>
+                    </p>
+                </a>
+                <!-- Reel 3 -->
+                <a href="https://www.facebook.com/reel/942253284194449" target="_blank" class="reveal aspect-[9/16] sm:aspect-auto sm:h-64 rounded-3xl overflow-hidden relative group shadow-sm hover:shadow-md border-2 border-[#50C878]/20 hover:border-[#50C878] bg-white transition-all duration-300 flex flex-col justify-center items-center p-6 text-center">
+                    <div class="w-16 h-16 bg-[#50C878]/10 text-[#50C878] rounded-full flex items-center justify-center mb-4 group-hover:bg-[#50C878] group-hover:text-white transition-colors duration-300">
+                        <div class="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-current border-b-[8px] border-b-transparent ml-1"></div>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider mb-2 text-slate-400 group-hover:text-[#50C878] transition-colors">Performance Video</span>
+                    <h4 class="font-bold text-lg text-slate-800 mb-2">パフォーマンス動画 3</h4>
+                    <p class="text-sm text-slate-500 flex items-center justify-center gap-2 mt-4">
+                        <svg class="text-[#1877F2]" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <span>Facebookで再生</span>
+                    </p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full bg-slate-900 -z-10"></div>
+        <div class="max-w-4xl mx-auto px-6 text-center text-white">
+            <div class="reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-8">まずはLINEで気軽に体験予約</h2>
+                <p class="text-slate-400 text-lg mb-12 max-w-xl mx-auto">
+                    ご質問や体験レッスンのご予約は、公式LINEから24時間受け付けております。お気軽にお問い合わせください。
+                </p>
+                <button class="bg-[#06C755] hover:bg-[#05b34c] text-white px-10 py-6 rounded-full font-bold text-xl flex items-center gap-4 mx-auto shadow-2xl shadow-green-500/20 transition-all hover:scale-105 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    LINE公式アカウントで無料体験を申し込む
+                </button>
+                <p class="mt-8 text-sm text-slate-500">
+                    ※通常1営業日以内にスタッフよりご返信いたします。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-[#50C878] rounded flex items-center justify-center text-white font-bold">
+                        A
+                    </div>
+                    <span class="font-bold text-lg text-slate-800">Azabu Juggling Club</span>
+                </div>
+                <div class="flex gap-8 text-sm text-slate-500">
+                    <a href="#" class="hover:text-[#50C878] transition-colors">プライバシーポリシー</a>
+                    <a href="#" class="hover:text-[#50C878] transition-colors">利用規約</a>
+                    <a href="#" class="hover:text-[#50C878] transition-colors">特定商取引法に基づく表記</a>
+                </div>
+            </div>
+            <div class="text-center md:text-left border-t border-slate-50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-400 text-sm">
+                    &copy; 2026 Azabu Juggling Club (AJC)
+                </p>
+                <p class="text-slate-300 text-[10px] uppercase tracking-widest">
+                    港区立学校施設等使用事前届出団体
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Juggling Ball Animation ---
+        const canvas = document.getElementById('juggling-canvas');
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+        const balls = [
+            { x: 0, y: 0, vx: 2, vy: -15, radius: 25, color: '#50C878', gravity: 0.25 },
+            { x: 0, y: 0, vx: -2, vy: -18, radius: 25, color: '#FF8C00', gravity: 0.25 },
+            { x: 0, y: 0, vx: 0, vy: -20, radius: 25, color: '#FFFFFF', gravity: 0.25, stroke: '#50C878' },
+        ];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            balls.forEach((ball, i) => {
+                ball.x = canvas.width / 2 + (i - 1) * 100;
+                ball.y = canvas.height + 50;
+            });
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            balls.forEach(ball => {
+                ball.vy += ball.gravity;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+
+                if (ball.y > canvas.height + 100) {
+                    ball.y = canvas.height + 50;
+                    ball.vy = -15 - Math.random() * 10;
+                    ball.vx = (Math.random() - 0.5) * 4;
+                    ball.x = canvas.width / 2 + (Math.random() - 0.5) * 200;
+                }
+
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.fillStyle = ball.color;
+                ctx.fill();
+                if (ball.stroke) {
+                    ctx.strokeStyle = ball.stroke;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                ctx.closePath();
+
+                ctx.beginPath();
+                ctx.arc(ball.x - ball.radius * 0.3, ball.y - ball.radius * 0.3, ball.radius * 0.2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fill();
+                ctx.closePath();
+            });
+            animationFrameId = requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- Header Scroll Effect ---
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        });
+
+        // --- Mobile Menu Toggle ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            const isOpen = mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+            menuIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+        }));
+
+        // --- Intersection Observer for Reveal Animations ---
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
